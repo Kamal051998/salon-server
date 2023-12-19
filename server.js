@@ -7,8 +7,8 @@ import productRouter from "./routes/productRoute.js";
 
 const app = express();
 
-const port = process.env.port;
-const DB = process.env.database;
+const port = 8000
+const DB = process.env.DATABASE;
 
 app.use('/img/products', express.static('public/img/products'));
 
