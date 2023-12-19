@@ -10,6 +10,8 @@ const app = express();
 const port = process.env.port;
 const DB = process.env.database;
 
+app.use('/img/products', express.static('public/img/products'));
+
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));

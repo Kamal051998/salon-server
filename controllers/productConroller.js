@@ -31,15 +31,17 @@ export const addProduct = async (req, res) => {
   try {
     const img = req.file.filename;
     const newProduct = await BeautyProduct.create({ ...req.body, img });
-    const imagePath = `/img/products/${img}`;
-    res
-      .status(200)
-      .json({ status: "success", data: { product: newProduct, imagePath } });
+    const imagePath = `/img/products/${encodeURIComponent(img)}`;
+    const fullImagePath = `${req.protocol}://${req.get("host")}${imagePath}`;
+
+    res.status(200).json({
+      status: "success",
+      data: { product: newProduct, imagePath: fullImagePath },
+    });
   } catch (error) {
     res.status(400).json({ status: "fail", error });
   }
 };
-
 export const getAllProducts = async (req, res) => {
   try {
     const allProducts = await BeautyProduct.find();
