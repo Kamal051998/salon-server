@@ -30,13 +30,13 @@ export const uploadProductPhoto = upload.single("photo");
 export const addProduct = async (req, res) => {
   try {
     const img = req.file.filename;
-    const newProduct = await BeautyProduct.create({ ...req.body, img });
     const imagePath = `/img/products/${encodeURIComponent(img)}`;
     const fullImagePath = `${req.protocol}://${req.get("host")}${imagePath}`;
+    const newProduct = await BeautyProduct.create({ ...req.body, img:fullImagePath });
 
     res.status(200).json({
       status: "success",
-      data: { product: newProduct, imagePath: fullImagePath },
+      data: { product: newProduct },
     });
   } catch (error) {
     res.status(400).json({ status: "fail", error });
@@ -50,3 +50,36 @@ export const getAllProducts = async (req, res) => {
     res.status(400).json({ status: "fail", error });
   }
 };
+
+
+export const categoryProducts=async(req,res)=>{
+  try {
+    const {category,subCategory,subSubCategory}=req.body 
+
+    const aggregationPipeline = [];
+
+  
+    if (category) {
+      aggregationPipeline.push({ $match: { category } });
+    }
+
+    if (subCategory) {
+      aggregationPipeline.push({ $match: { subCategory } });
+    }
+
+    if (subSubCategory) {
+      aggregationPipeline.push({ $match: { subSubCategory } });
+    }
+    
+    const allProducts = await BeautyProduct.aggregate(aggregationPipeline);
+
+    res.status(200).json({ status: "sucess", data: allProducts });
+
+
+
+
+  } catch (error) {
+    res.status(400).json({ status: "fail", error });
+
+  }
+}
